@@ -12,7 +12,54 @@ const returnsRoutes = require("./routes/returns.routes");
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN?.split(",") || true }));
+const defaultOrigins = [
+  "https://goodthings-frontend.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
+
+const normalizeOrigin = (origin) => origin.trim().replace(/\/+$/, "");
+
+const allowedOrigins = [
+  ...new Set(
+    [
+      process.env.CLIENT_URL,
+      process.env.CLIENT_ORIGIN,
+      process.env.FRONTEND_URL,
+    ]
+      .filter(Boolean)
+      .flatMap((value) => value.split(","))
+      .map(normalizeOrigin)
+      .filter(Boolean)
+      .concat(defaultOrigins),
+  ),
+];
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  const normalized = normalizeOrigin(origin);
+  return (
+    allowedOrigins.includes(normalized) ||
+    /^https:\/\/goodthings-frontend(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(
+      normalized,
+    )
+  );
+};
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) return callback(null, true);
+    const error = new Error(`Origin ${origin} is not allowed by CORS.`);
+    error.status = 403;
+    return callback(error);
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "6mb" }));
 
 app.get("/api/health", (req, res) => {
