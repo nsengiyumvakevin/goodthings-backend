@@ -16,8 +16,7 @@ async function start() {
   }
   const mongoUri =
     process.env.MONGODB_URI ||
-    process.env.MONGO_URI ||
-    "mongodb://127.0.0.1:27017/transaction_app";
+    "mongodb+srv://nsengiyumvakevincom_db_user:ONfdryqOI1FIgOD7@goodthings.ppowe88.mongodb.net/test";
   await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
   await seedProducts();
 
