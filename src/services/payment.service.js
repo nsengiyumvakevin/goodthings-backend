@@ -22,7 +22,7 @@ async function expireBill(payment, now = new Date()) {
       expires_at: { $lte: now },
     },
     { status: expiredStatus },
-    { new: true },
+    { returnDocument: "after" },
   );
   if (!expired) return false;
 
@@ -121,7 +121,7 @@ async function applyPaymentResult(payment, successful, failureReason = "") {
       ],
     },
     update,
-    { new: true },
+    { returnDocument: "after" },
   );
   if (!updated) return;
 

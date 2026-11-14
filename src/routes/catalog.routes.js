@@ -49,7 +49,7 @@ router.patch(
   authenticate(["admin"]),
   asyncRoute(async (req, res) => {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     }).select("+cost_price");
     if (!product) return res.status(404).json({ error: "Product not found." });

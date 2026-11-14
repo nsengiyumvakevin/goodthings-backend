@@ -39,7 +39,7 @@ router.patch(
         status: decision === "accept" ? "unpaid" : "rejected",
         review_status: decision === "accept" ? "accepted" : "rejected",
       },
-      { new: true },
+      { returnDocument: "after" },
     );
     if (!debt)
       return res

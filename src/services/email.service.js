@@ -50,7 +50,7 @@ async function updateJob(jobName, status, error = "") {
   return JobMonitoring.findOneAndUpdate(
     { job_name: jobName },
     { status, last_run: new Date(), error },
-    { upsert: true, new: true },
+    { upsert: true, returnDocument: "after" },
   );
 }
 

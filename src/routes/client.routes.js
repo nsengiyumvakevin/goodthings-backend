@@ -92,7 +92,7 @@ router.post(
         },
         $setOnInsert: { added_at: new Date() },
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true },
+      { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
     );
     res
       .status(201)
@@ -111,7 +111,7 @@ router.patch(
     const item = await CartItem.findOneAndUpdate(
       { _id: req.params.id, client_id: req.auth.sub, status: "in_cart" },
       { quantity },
-      { new: true },
+      { returnDocument: "after" },
     ).populate("product_id");
     if (!item) return res.status(404).json({ error: "Cart item not found." });
     res.json(item);

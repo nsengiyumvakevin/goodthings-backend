@@ -33,7 +33,7 @@ async function start() {
         },
         $setOnInsert: { email },
       },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
   }
 

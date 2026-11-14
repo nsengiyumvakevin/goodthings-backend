@@ -102,7 +102,7 @@ router.patch(
     const notification = await Notification.findOneAndUpdate(
       { _id: req.params.id, admin_id: req.auth.sub },
       { read_at: new Date() },
-      { new: true },
+      { returnDocument: "after" },
     );
     if (!notification)
       return res.status(404).json({ error: "Notification not found." });
@@ -294,7 +294,7 @@ router.patch(
     const job = await JobMonitoring.findOneAndUpdate(
       { job_name: req.params.name },
       { priority },
-      { new: true },
+      { returnDocument: "after" },
     );
     if (!job) return res.status(404).json({ error: "Background job not found." });
     res.json(job);
@@ -315,7 +315,7 @@ router.post(
         last_run: new Date(),
         error: String(req.body.error || "").slice(0, 500),
       },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
     res.sendStatus(204);
   }),
